@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Instruções da Aula</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #fff8dc;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 40px;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .mascote {
+      font-size: 120px;
+      animation: flutuar 2s infinite ease-in-out;
+    }
+
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .fala {
+      max-width: 600px;
+      background-color: #fff;
+      border: 3px solid #ff69b4;
+      border-radius: 24px;
+      padding: 30px;
+      color: #444;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+      animation: aparecer 0.5s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    #textoFala {
+      font-size: 36px;
+      line-height: 1.7;
+      max-width: 100%;
+    }
+
+    #emojiFlutuante {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 64px;
+      animation: flutuarEmoji 2s infinite ease-in-out;
+      z-index: 998;
+    }
+
+    @keyframes flutuarEmoji {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    .botoes-navegacao {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 1000;
+    }
+
+    .botao-voltar {
+      font-size: 20px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 25px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .botao-voltar:hover {
+      background-color: #ff1493;
+      transform: scale(1.05);
+    }
+    .botao-proximo {
+      font-size: 20px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 25px;
+      cursor: pointer;
+      margin-right: 50px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .botao-proximo:hover {
+      background-color: #ff1493;
+      transform: scale(1.05);
+    }
+
+    .botao-voltar:hover, .botao-proximo:hover {
+      transform: scale(1.2);
+    }
+
+    .progresso-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background-color: #ffe4e1;
+      z-index: 999;
+    }
+
+    .progresso-barra {
+      height: 100%;
+      background-color: #ff69b4;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    @keyframes aparecer {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="emojiFlutuante">💻</div>
+
+  <div class="container">
+    <div class="mascote" title="Professor Rafael">🤖</div>
+
+    <div class="fala" id="falaMascote">
+      <div id="textoFala">
+        Olá! Eu sou o Professor Rafael, seu guia nesta aventura educativa. Vamos começar aprendendo como usar o computador! 💻
+      </div>
+    </div>
+  </div>
+
+  <div class="botoes-navegacao">
+    <button class="botao-voltar" onclick="voltarFala()">⬅️ Voltar</button>
+    <button class="botao-proximo" onclick="proximaFala()">Próximo➡️</button>
+  </div>
+
+  <div class="progresso-container">
+    <div class="progresso-barra" id="barraProgresso"></div>
+  </div>
+
+  <script>
+    const falas = [
+      { texto: "Olá! Eu sou o Professor Rafael, seu guia nesta aventura educativa. Vamos começar aprendendo como usar o computador! 💻", emoji: "💻" },
+      { texto: "Para navegar pelos jogos, use o mouse para clicar nos botões. É como apontar com o dedo! 🖱️", emoji: "🖱️" },
+      { texto: "Se precisar escrever, use o teclado. Cada tecla representa uma letra ou número. Digite com calma e atenção! ⌨️", emoji: "⌨️" },
+      { texto: "Agora que você já sabe usar o computador, vamos falar sobre os jogos educativos! 😊", emoji: "😊" },
+      { texto: "Aqui você encontrará atividades de alfabetização, matemática, geografia e história. Cada jogo foi feito para te ajudar a aprender brincando! 📚", emoji: "📚" },
+      { texto: "Você pode explorar quizzes, desafios e jogos interativos. Aprender nunca foi tão divertido! 🎯", emoji: "🎯" },
+      { texto: "Pronto para começar? Explore os jogos e descubra o mundo do conhecimento! 🚀", emoji: "🚀" },
+      { texto: "Pode clicar no X lá em cima no cantinho direito pra começar a jogar! Divirta-se bastante! 😄", emoji: "🕹️" }
+    ];
+
+    let indice = 0;
+    const textoFala = document.getElementById('textoFala');
+    const emojiFlutuante = document.getElementById('emojiFlutuante');
+    const barraProgresso = document.getElementById('barraProgresso');
+
+    function atualizarProgresso() {
+      const progresso = ((indice + 1) / falas.length) * 100;
+      barraProgresso.style.width = `${progresso}%`;
+    }
+
+    function proximaFala() {
+      if (indice < falas.length - 1) {
+        indice++;
+        textoFala.innerText = falas[indice].texto;
+        emojiFlutuante.innerText = falas[indice].emoji;
+        atualizarProgresso();
+      }
+    }
+
+    function voltarFala() {
+      if (indice > 0) {
+        indice--;
+        textoFala.innerText = falas[indice].texto;
+        emojiFlutuante.innerText = falas[indice].emoji;
+        atualizarProgresso();
+      }
+    }
+
+    // Inicializa
+    textoFala.innerText = falas[indice].texto;
+    emojiFlutuante.innerText = falas[indice].emoji;
+    atualizarProgresso();
+  </script>
+
+</body>
+</html>

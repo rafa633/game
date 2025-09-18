@@ -1,0 +1,21 @@
+window.todasAsFases = [
+  { palavra: 'CÃO', correta: 'PÃO', emoji: '🐶', opcoes: ['SOL', 'PÃO', 'BOLA', 'GATO'] },
+  { palavra: 'GATO', correta: 'SAPATO', emoji: '🐱', opcoes: ['SAPATO', 'CACHORRO', 'CASA', 'BOLA'] },
+  { palavra: 'BOLA', correta: 'ESCOLA', emoji: '⚽', opcoes: ['ESCOLA', 'CÃO', 'MAÇÃ', 'CARRO'] },
+  { palavra: 'FADA', correta: 'TOURADA', emoji: '🧚', opcoes: ['TOURADA', 'FARO', 'PATO', 'LATA'] },
+  { palavra: 'SAPO', correta: 'PAPO', emoji: '🐸', opcoes: ['PAPO', 'CACHORRO', 'CASA', 'BOLA'] },
+  { palavra: 'PATO', correta: 'RATO', emoji: '🦆', opcoes: ['RATO', 'PORCO', 'GALO', 'CÃO'] },
+  { palavra: 'MAÇÃ', correta: 'IRMÃ', emoji: '🍎', opcoes: ['IRMÃ', 'BOLA', 'CASA', 'CACHORRO'] },
+  { palavra: 'SOL', correta: 'FAROL', emoji: '🌞', opcoes: ['FAROL', 'SAPATO', 'PATO', 'GATO'] },
+  { palavra: 'CASA', correta: 'ASA', emoji: '🏠', opcoes: ['ASA', 'MAÇÃ', 'BOLA', 'CÃO'] },
+  { palavra: 'RATO', correta: 'GATO', emoji: '🐭', opcoes: ['CÃO', 'GATO', 'CASA', 'PÃO'] },
+  { palavra: 'CARRO', correta: 'BARRO', emoji: '🚗', opcoes: ['BARRO', 'CAVALO', 'CASA', 'SAPO'] },
+  { palavra: 'FOGO', correta: 'JOGO', emoji: '🔥', opcoes: ['JOGO', 'SAPATO', 'GATO', 'PATO'] },
+  { palavra: 'PEIXE', correta: 'FEIXE', emoji: '🐟', opcoes: ['FEIXE', 'FESTA', 'CÃO', 'RATO'] },
+  { palavra: 'CAVALO', correta: 'GALO', emoji: '🐴', opcoes: ['GALO', 'SAPO', 'CASA', 'BOLA'] },
+  { palavra: 'LUA', correta: 'RUA', emoji: '🌙', opcoes: ['RUA', 'MAÇÃ', 'GATO', 'PÃO'] },
+  { palavra: 'GALO', correta: 'CAVALO', emoji: '🐓', opcoes: ['CAVALO', 'SAPATO', 'CASA', 'BOLA'] },
+  { palavra: 'PORCO', correta: 'TORCO', emoji: '🐷', opcoes: ['TORCO', 'SAPO', 'PATO', 'GATO'] },
+  { palavra: 'FLORESTA', correta: 'FESTA', emoji: '🌳', opcoes: ['FESTA', 'MAÇÃ', 'CASA', 'PÃO'] },
+  
+];

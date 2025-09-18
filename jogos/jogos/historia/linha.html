@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Linha do Tempo - História do Brasil</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #F3D6B3;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #00695c;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .mascote {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+
+    .linha-do-tempo {
+      display: flex;
+      overflow-x: auto;
+      padding: 20px 0;
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none; /* Firefox */
+    }
+
+    .linha-do-tempo::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+
+    .evento {
+      flex: 0 0 auto;
+      width: 250px;
+      background-color: #ffffff;
+      border: 2px solid #4db6ac;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+      scroll-snap-align: center;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .evento:hover {
+      transform: scale(1.05);
+    }
+
+    .ano {
+      font-size: 22px;
+      font-weight: bold;
+      color: #00796b;
+      margin-bottom: 10px;
+    }
+
+    .descricao {
+      font-size: 18px;
+      color: #004d40;
+    }
+
+    .emoji {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    /* Modal */
+    #modalImagem {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #modalImagem .conteudo {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      text-align: center;
+    }
+
+    #modalImagem img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 10px;
+    }
+
+    #modalImagem button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00897b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #modalImagem button:hover {
+      background-color: #00695c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mascote">🤖</div>
+  <h1>LINHA DO TEMPO DA HISTÓRIA DO BRASIL</h1>
+
+  <div class="linha-do-tempo">
+    <div class="evento" onclick="mostrarImagem('1500')">
+      <div class="emoji">⛵</div>
+      <div class="ano">1500</div>
+      <div class="descricao">Chegada de Pedro Álvares Cabral ao Brasil.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1600')">
+      <div class="emoji">⚒️</div>
+      <div class="ano">1600–1700</div>
+      <div class="descricao">Ciclo do açúcar e do ouro no Brasil Colônia.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1822')">
+      <div class="emoji">👑</div>
+      <div class="ano">1822</div>
+      <div class="descricao">Dom Pedro I proclama a Independência do Brasil.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1888')">
+      <div class="emoji">📜</div>
+      <div class="ano">1888</div>
+      <div class="descricao">Princesa Isabel assina a Lei Áurea.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1889')">
+      <div class="emoji">🏛️</div>
+      <div class="ano">1889</div>
+      <div class="descricao">Proclamação da República por Marechal Deodoro.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1960')">
+      <div class="emoji">🏙️</div>
+      <div class="ano">1960</div>
+      <div class="descricao">Inauguração de Brasília como capital do Brasil.</div>
+    </div>
+
+    <div class="evento" onclick="mostrarImagem('1988')">
+      <div class="emoji">📖</div>
+      <div class="ano">1988</div>
+      <div class="descricao">Promulgação da Constituição Cidadã.</div>
+    </div>
+    <div class="evento" onclick="mostrarImagem('atual')">
+        <div class="emoji">📱</div>
+        <div class="ano">Dias Atuais</div>
+        <div class="descricao">Brasil democrático, conectado e em constante transformação.</div>
+        </div>
+  </div>
+
+  <!-- Modal de Imagem -->
+  <div id="modalImagem">
+    <div class="conteudo">
+      <img id="imagemEvento" src="" alt="Imagem histórica">
+      <br>
+      <button onclick="fecharImagem()">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    function mostrarImagem(ano) {
+      const imagens = {
+        "1500": "https://www.360meridianos.com/wp-content/uploads/2016/06/cabral-desembarque-1.jpg",
+        "1600": "https://escolaeducacao.com.br/wp-content/uploads/2018/08/ciclo-d-a%C3%A7ucar.jpg",
+        "1822": "https://static.todamateria.com.br/upload/in/de/independenciabrasil0011024x6431024x585-cke.jpg",
+        "1888": "https://static.todamateria.com.br/upload/le/ia/leiaurea-cke.jpg",
+        "1889": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Proclama%C3%A7%C3%A3o_da_Rep%C3%BAblica_by_Benedito_Calixto_1893.jpg",
+        "1960": "https://acervo.oglobo.globo.com/incoming/9187788-497-496/materia/2011-370390111-2011012164971.jpg_20110121.jpg",
+        "1988": "https://static.nationalgeographicbrasil.com/files/styles/image_3200/public/asamblea-nacional-brasil-arquivo-agencia-brasil.webp?w=760&h=548",
+        "atual": "https://imgs.jusbr.com/publications/images/9175764fa2b4acfe741fb9da68df9560"
+        };
+
+      
+
+      document.getElementById("imagemEvento").src = imagens[ano];
+      document.getElementById("modalImagem").style.display = "flex";
+    }
+
+    function fecharImagem() {
+      document.getElementById("modalImagem").style.display = "none";
+    }
+  </script>
+
+</body>
+</html>

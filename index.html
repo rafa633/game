@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogos Educativos🧠</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5364/5364915.png">
+
+  <style>
+  body {
+    background-image: url('img/fundo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #fdfdfd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(255,255,255,0.6);
+    z-index: -1;
+  }
+
+  h1 {
+    font-size: 42px;
+    color: #ff69b4;
+    margin: 30px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px #fff;
+  }
+
+  h2 {
+    font-size: 28px;
+    color: #ff8c00;
+    margin: 40px 0 20px;
+    text-transform: uppercase;
+    border-bottom: 2px dashed #ffecb3;
+    padding-bottom: 5px;
+    width: 90%;
+    max-width: 1200px;
+  }
+
+  .carrossel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    overflow: hidden;
+  }
+
+  .jogos-container {
+    display: flex;
+    gap: 30px;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    overflow-x: auto;
+  }
+
+  .jogos-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .jogo-card {
+    flex: 0 0 auto;
+    background-color: #fff8dc;
+    border: 4px solid #000000;
+    border-radius: 20px;
+    box-shadow: 0 6px 16px rgba(255, 182, 193, 0.3);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 210px;
+  }
+
+  .jogo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  .emoji {
+    font-size: 72px;
+    margin-bottom: 10px;
+  }
+
+  .jogo-card h2 {
+    font-size: 22px;
+    margin: 10px 0 5px;
+    color: #ff6347;
+  }
+
+  .jogo-card p {
+    font-size: 14px;
+    color: #333;
+    margin: 0 10px 15px;
+  }
+
+  .jogo-card button {
+    margin-top: auto;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background-color: #0f7212;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .jogo-card button:hover {
+    background-color: #3fff14;
+  }
+
+  .seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 60px;
+    color: #ff8c00;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    user-select: none;
+    transition: opacity 0.3s;
+  }
+
+  .seta.esquerda {
+    left: -60px;
+  }
+
+  .seta.direita {
+    right: -60px;
+  }
+
+  .seta.oculta {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 5vh auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .modal-content iframe {
+    width: 100%;
+    height: 80vh;
+    border: none;
+  }
+
+  .fechar {
+    position: absolute;
+    top: -40px;
+    right: 10px;
+    font-size: 100px;
+    font-weight: bold;
+    color: #ff0000;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .fechar:hover {
+    color: #cc0000;
+  }
+
+  .mascote-animado {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    font-size: 80px;
+    animation: pular 2s infinite ease-in-out;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s;
+    display: inline-block;
+  }
+
+  /* Animação de pulo */
+  @keyframes pular {
+    0%, 100% { transform: translateY(2px); }
+    50% { transform: translateY(-5px); }
+  }
+
+  /* Animação de tremedeira */
+  @keyframes dancar {
+  0%   { transform: rotate(0deg) scale(1) translateX(0); }
+  25%  { transform: rotate(10deg) scale(1.1) translateX(5px); }
+  50%  { transform: rotate(-10deg) scale(1.1) translateX(-5px); }
+  75%  { transform: rotate(10deg) scale(1.1) translateX(5px); }
+  100% { transform: rotate(0deg) scale(1) translateX(0); }
+}
+
+.mascote-animado:hover {
+  animation: dancar 0.6s infinite;
+}
+</style>
+</head>
+<body>
+  <h1>Jogos Educativos</h1>
+  <div id="jogos-container"></div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal()">×</span>
+      <iframe id="iframe-jogo" src=""></iframe>
+    </div>
+  </div>
+  <div id="modal-instrucoes" class="modal">
+  <div class="modal-content">
+    <span class="fechar" onclick="fecharModalInstrucoes()">×</span>
+    <iframe id="iframe-instrucoes" src="instrucoes.html"></iframe>
+  </div>
+</div>
+
+  <script src="jogos.js"></script>
+
+  <script>
+    function carregarJogos() {
+      const container = document.getElementById('jogos-container');
+
+      const categorias = {};
+      const semCategoria = [];
+
+      jogos.forEach(jogo => {
+        if (jogo.categoria) {
+          if (!categorias[jogo.categoria]) {
+            categorias[jogo.categoria] = [];
+          }
+          categorias[jogo.categoria].push(jogo);
+        } else {
+          semCategoria.push(jogo);
+        }
+      });
+
+      if (semCategoria.length > 0) {
+        container.appendChild(criarCarrossel(semCategoria));
+      }
+
+      for (const nome in categorias) {
+        const bloco = document.createElement('div');
+        bloco.style.display = 'flex';
+        bloco.style.flexDirection = 'column';
+        bloco.style.alignItems = 'center';
+        bloco.style.width = '100%';
+
+        const titulo = document.createElement('h2');
+        titulo.textContent = nome;
+        bloco.appendChild(titulo);
+
+        bloco.appendChild(criarCarrossel(categorias[nome]));
+        container.appendChild(bloco);
+      }
+    }
+
+    function criarCarrossel(lista) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'carrossel-wrapper';
+
+      const container = document.createElement('div');
+      container.className = 'jogos-container';
+
+      lista.forEach(jogo => container.appendChild(criarCard(jogo)));
+
+      const setaEsq = document.createElement('div');
+      setaEsq.className = 'seta esquerda';
+      setaEsq.innerText = '❮';
+      setaEsq.onclick = () => container.scrollBy({ left: -800, behavior: 'smooth' });
+
+      const setaDir = document.createElement('div');
+      setaDir.className = 'seta direita';
+      setaDir.innerText = '❯';
+      setaDir.onclick = () => container.scrollBy({ left: 800, behavior: 'smooth' });
+
+      wrapper.appendChild(setaEsq);
+      wrapper.appendChild(container);
+      wrapper.appendChild(setaDir);
+
+      return wrapper;
+    }
+
+    function criarCard(jogo) {
+      const card = document.createElement('div');
+      card.className = 'jogo-card';
+      card.innerHTML = `
+        <div class="emoji">${jogo.emoji}</div>
+        <h2>${jogo.titulo}</h2>
+        <p>${jogo.descricao}</p>
+        <button onclick="abrirJogo('${jogo.arquivo}')">Jogar</button>
+      `;
+      return card;
+    }
+
+    function abrirJogo(url) {
+      document.getElementById('iframe-jogo').src = url;
+      document.getElementById('modal').style.display = 'block';
+    }
+
+    function fecharModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('iframe-jogo').src = '';
+    }
+
+    carregarJogos();
+  </script>
+
+  <div class="mascote-animado" title="Professor Rafael">🤖</div>
+  <script>
+    document.querySelector('.mascote-animado').onclick = () => {
+      document.getElementById('modal-instrucoes').style.display = 'block';
+    };
+
+    function fecharModalInstrucoes() {
+      document.getElementById('modal-instrucoes').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

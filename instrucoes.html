@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Instruções da Aula</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #fff8dc, #ffe4e1);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      max-width: 1000px;
+      padding: 20px;
+      box-sizing: border-box;
+      margin-bottom: 100px;
+    }
+
+    .mascote {
+      font-size: 120px;
+      animation: mexer 2s infinite ease-in-out;
+      cursor: default;
+      transition: transform 0.3s;
+    }
+
+    @keyframes mexer {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .fala {
+      max-width: 600px;
+      background-color: #fff;
+      border: 4px dashed #ff69b4;
+      border-radius: 30px;
+      padding: 40px;
+      color: #333;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+      animation: aparecer 0.5s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    #textoFala {
+      font-size: 36px;
+      line-height: 1.6;
+      color: #c71585;
+    }
+
+    .botoes-navegacao {
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      z-index: 1000;
+    }
+
+    .botao-voltar, .botao-proximo {
+      font-size: 22px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 30px;
+      cursor: pointer;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .botao-voltar:hover, .botao-proximo:hover {
+      background-color: #ff1493;
+      transform: scale(1.2);
+    }
+
+    .botao-som {
+      font-size: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+    }
+
+    .progresso-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background-color: #ffe4e1;
+      z-index: 999;
+    }
+
+    .progresso-barra {
+      height: 100%;
+      background-color: #ff69b4;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    @keyframes aparecer {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="mascote" title="Professor Rafael">🤖</div>
+
+    <div class="fala" id="falaMascote">
+      <div id="textoFala">
+        Olá! Eu sou o Professor Rafael, seu guia nesta aventura educativa. Vamos começar aprendendo como usar o computador! 💻
+      </div>
+    </div>
+  </div>
+
+  <div class="botoes-navegacao">
+    <button class="botao-voltar" onclick="voltarFala()">⬅️ Voltar</button>
+    <button class="botao-som" onclick="falarTexto(falas[indice].texto)" title="Ouvir fala">🔊</button>
+    <button class="botao-proximo" onclick="proximaFala()">Próximo ➡️</button>
+  </div>
+
+  <div class="progresso-container">
+    <div class="progresso-barra" id="barraProgresso"></div>
+  </div>
+
+  <script>
+    const falas = [
+      { texto: "Olá! Eu sou o Professor Rafael, seu guia nesta aventura educativa. Vamos começar aprendendo como usar o computador! 💻" },
+      { texto: "Para navegar pelos jogos, use o mouse para clicar nos botões. É como apontar com o dedo! 🖱️" },
+      { texto: "Se precisar escrever, use o teclado. Cada tecla representa uma letra ou número. Digite com calma e atenção! ⌨️" },
+      { texto: "Agora que você já sabe usar o computador, vamos falar sobre os jogos educativos! 😊" },
+      { texto: "Aqui você encontrará atividades de alfabetização, matemática, geografia e história. Cada jogo foi feito para te ajudar a aprender brincando! 📚" },
+      { texto: "Você pode explorar quizzes, desafios e jogos interativos. Aprender nunca foi tão divertido! 🎯" },
+      { texto: "Pronto para começar? Explore os jogos e descubra o mundo do conhecimento! 🚀" },
+      { texto: "Pode clicar no X lá em cima no cantinho direito pra começar a jogar! Divirta-se bastante! 😄" }
+    ];
+
+    let indice = 0;
+    const textoFala = document.getElementById('textoFala');
+    const barraProgresso = document.getElementById('barraProgresso');
+
+    function falarTexto(texto) {
+      const textoSemEmoji = texto.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF])/g, '').trim();
+      const fala = new SpeechSynthesisUtterance(textoSemEmoji);
+      fala.lang = 'pt-BR';
+      fala.rate = 1;
+      fala.pitch = 1.2;
+      fala.volume = 1;
+
+      fala.onend = () => {
+        setTimeout(() => {
+          proximaFala(true);
+        }, 1000);
+      };
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(fala);
+    }
+
+    function atualizarProgresso() {
+      const progresso = ((indice + 1) / falas.length) * 100;
+      barraProgresso.style.width = `${progresso}%`;
+    }
+
+    function proximaFala(auto = false) {
+      if (indice < falas.length - 1) {
+        indice++;
+        textoFala.innerText = falas[indice].texto;
+        atualizarProgresso();
+        if (auto) falarTexto(falas[indice].texto);
+      }
+    }
+
+    function voltarFala() {
+      if (indice > 0) {
+        indice--;
+        textoFala.innerText = falas[indice].texto;
+        atualizarProgresso();
+      }
+    }
+
+    // Inicializa sempre do começo
+    indice = 0;
+    textoFala.innerText = falas[indice].texto;
+    atualizarProgresso();
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("*").forEach(el => {
+      if (el.textContent.includes("🤖")) {
+        el.setAttribute("title", "Professor Rafael");
+        el.style.cursor = "pointer";
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

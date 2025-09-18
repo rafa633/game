@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Robô Rafael - Corre e Aprende</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #fef8ec;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background-color: transparent;
+    }
+
+    #palavra, #pontos, #gameover {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #palavra {
+      font-size: 32px;
+      color: #333;
+      letter-spacing: 8px;
+    }
+
+    #pontos {
+      font-size: 24px;
+      color: #00796b;
+    }
+
+    #gameover {
+      font-size: 28px;
+      color: red;
+      display: none;
+    }
+
+    #reiniciar {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      background-color: #ffffffcc;
+      border: 2px solid #00695c;
+      border-radius: 50%;
+      padding: 10px 16px;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: pulse 1.5s infinite;
+    }
+
+    #reiniciar:hover {
+      background-color: #e0f7fa;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .letra-preta {
+      color: black;
+    }
+
+    .letra-verde {
+      color: green;
+      text-shadow: 0 0 5px lime;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="jogo" width="800" height="300"></canvas>
+  <div id="palavra"></div>
+  <div id="pontos">Pontos: 0</div>
+  <div id="gameover"></div>
+  <button id="reiniciar" onclick="reiniciarJogo()">🔄</button>
+
+  <script>
+    const canvas = document.getElementById('jogo');
+    const ctx = canvas.getContext('2d');
+    const palavraDiv = document.getElementById('palavra');
+    const pontosDiv = document.getElementById('pontos');
+    const gameoverDiv = document.getElementById('gameover');
+    const reiniciarBtn = document.getElementById('reiniciar');
+
+    const fundo = new Image();
+    fundo.src = 'robo/cenario.png';
+
+    let robo, chao, obstaculos, letras, palavraAtual, progresso, letraIndex, palavrasConcluidas, jogoAtivo, velocidade;
+
+    function iniciarJogo() {
+      robo = { x: 50, y: 250, largura: 40, altura: 40, cor: '#333', velocidadeY: 0, pulando: false };
+      chao = 250;
+      obstaculos = [];
+      letras = [];
+      palavraAtual = novaPalavra();
+      progresso = Array(palavraAtual.length).fill("_");
+      letraIndex = 0;
+      palavrasConcluidas = 0;
+      velocidade = 5;
+      jogoAtivo = true;
+      atualizarPalavra();
+      atualizarPontos();
+      gameoverDiv.style.display = 'none';
+      reiniciarBtn.style.display = 'none';
+    }
+
+    function novaPalavra() {
+      const lista = ["BOLA", "CASA", "DADO", "FADA", "LUA"];
+      return lista[Math.floor(Math.random() * lista.length)];
+    }
+
+    function gerarObstaculo() {
+      if (!jogoAtivo) return;
+      obstaculos.push({ x: canvas.width, y: chao, largura: 20, altura: 40, cor: '#d32f2f' });
+    }
+
+    function gerarLetra() {
+      if (!jogoAtivo || letraIndex >= palavraAtual.length) return;
+      const letra = palavraAtual[letraIndex];
+      letras.push({ x: canvas.width, y: chao - 50, letra: letra, largura: 30, altura: 30, cor: '#ff9800' });
+    }
+
+    function desenharFundo() {
+      ctx.drawImage(fundo, 0, 0, canvas.width, canvas.height);
+    }
+
+    function desenharRobo() {
+      ctx.font = '28px Comic Sans MS';
+      ctx.fillText('🤖', robo.x, robo.y + 30);
+    }
+
+    function desenharRua() {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, chao + robo.altura, canvas.width, 5);
+    }
+
+    function desenharObstaculos() {
+      obstaculos.forEach(obs => {
+        ctx.fillStyle = obs.cor;
+        ctx.fillRect(obs.x, obs.y, obs.largura, obs.altura);
+      });
+    }
+
+    function desenharLetras() {
+      letras.forEach(letra => {
+        ctx.fillStyle = letra.cor;
+        ctx.fillRect(letra.x, letra.y, letra.largura, letra.altura);
+        ctx.fillStyle = '#fff';
+        ctx.font = '20px Comic Sans MS';
+        ctx.fillText(letra.letra, letra.x + 5, letra.y + 22);
+      });
+    }
+
+    function atualizarPalavra() {
+      const emojis = {
+        "LUA": "🌙",
+        "CASA": "🏠",
+        "DADO": "🎲",
+        "FADA": "🧚",
+        "BOLA": "⚽"
+      };
+      const emoji = emojis[palavraAtual] || "📘";
+
+      palavraDiv.innerHTML = emoji + " ";
+      for (let i = 0; i < palavraAtual.length; i++) {
+        const span = document.createElement('span');
+        span.innerText = palavraAtual[i];
+        span.className = progresso[i] === palavraAtual[i] ? 'letra-verde' : 'letra-preta';
+        palavraDiv.appendChild(span);
+        palavraDiv.innerHTML += ' ';
+      }
+    }
+
+    function atualizarPontos() {
+      pontosDiv.innerText = `Pontos: ${palavrasConcluidas}`;
+    }
+
+    function mostrarGameOver() {
+      jogoAtivo = false;
+      gameoverDiv.innerText = `💥 Game Over! Você concluiu ${palavrasConcluidas} palavra(s).`;
+      gameoverDiv.style.display = 'block';
+      reiniciarBtn.style.display = 'inline-block';
+    }
+
+    function reiniciarJogo() {
+      iniciarJogo();
+      atualizar();
+    }
+
+    function atualizar() {
+      if (!jogoAtivo) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      desenharFundo();
+
+      if (robo.pulando) {
+        robo.velocidadeY += 1.2;
+        robo.y += robo.velocidadeY;
+        if (robo.y >= chao) {
+          robo.y = chao;
+          robo.pulando = false;
+          robo.velocidadeY = 0;
+        }
+      }
+
+      obstaculos.forEach(obs => obs.x -= velocidade);
+      obstaculos = obstaculos.filter(obs => {
+        const colidiu = obs.x < robo.x + robo.largura &&
+                        obs.x + obs.largura > robo.x &&
+                        obs.y < robo.y + robo.altura &&
+                        obs.y + obs.altura > robo.y;
+        if (colidiu) {
+          mostrarGameOver();
+          return false;
+        }
+        return obs.x + obs.largura > 0;
+      });
+
+      letras.forEach(letra => letra.x -= velocidade);
+      letras = letras.filter(letra => {
+        const colidiu = letra.x < robo.x + robo.largura &&
+                        letra.x + letra.largura > robo.x &&
+                        letra.y < robo.y + robo.altura &&
+                        letra.y + letra.altura > robo.y;
+        if (colidiu) {
+          progresso[letraIndex] = letra.letra;
+          letraIndex++;
+          atualizarPalavra();
+          if (letraIndex === palavraAtual.length) {
+            palavrasConcluidas++;
+            atualizarPontos();
+            velocidade += 0.5;
+            setTimeout(() => {
+              palavraAtual = novaPalavra();
+              progresso = Array(palavraAtual.length).fill("_");
+              letraIndex = 0;
+                            atualizarPalavra();
+            }, 1000);
+          }
+          return false;
+        }
+        return letra.x + letra.largura > 0;
+      });
+
+      desenharRobo();
+      desenharRua();
+      desenharObstaculos();
+      desenharLetras();
+
+      requestAnimationFrame(atualizar);
+    }
+
+    // Controle de pulo
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' && jogoAtivo && !robo.pulando) {
+        robo.pulando = true;
+        robo.velocidadeY = -15;
+      }
+    });
+
+    // Geração de obstáculos e letras
+    setInterval(gerarObstaculo, 2500);
+    setInterval(gerarLetra, 4000);
+
+    // Inicialização do jogo
+    iniciarJogo();
+    fundo.onload = () => {
+      atualizar();
+    };
+  </script>
+</body>
+</html>

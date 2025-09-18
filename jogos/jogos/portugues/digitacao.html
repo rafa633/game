@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>⌨️ Digitação Interativa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #f0f8ff;
+      padding: 30px;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    #desafio {
+      font-size: 32px;
+      margin: 20px 0;
+    }
+
+    #entrada {
+      font-size: 22px;
+      padding: 10px;
+      width: 60%;
+      border: 2px solid #25f321;
+      border-radius: 8px;
+      outline: none;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-transform: uppercase;
+    }
+
+    #entrada.erro {
+      border-color: red;
+      background-color: #ffe5e5;
+    }
+
+    #feedback {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #444;
+    }
+
+    #emoji-feedback {
+      font-size: 40px;
+      margin-top: 10px;
+    }
+
+    .linha-teclado {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tecla {
+      padding: 15px;
+      background-color: #eee;
+      border-radius: 8px;
+      font-size: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.2s;
+      text-transform: uppercase;
+      width: 40px;
+      text-align: center;
+    }
+
+    .tecla.ativa {
+      background-color: #25f321;
+      color: white;
+    }
+
+    .tecla.erro {
+      background-color: red;
+      color: white;
+    }
+
+    #progresso {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    #modal-fim {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-fim .conteudo {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .estrela {
+      font-size: 40px;
+      color: gold;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .reiniciar {
+      background-color: #25f321;
+      color: white;
+    }
+
+    .fechar {
+      background-color: #ccc;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>⌨️ Digitação Interativa</h1>
+  <div id="desafio"></div>
+  <input type="text" id="entrada" placeholder="Digite aqui..." oninput="verificar()" autofocus />
+  <div id="feedback"></div>
+  <div id="emoji-feedback"></div>
+  <div id="teclado-visual"></div>
+  <div id="progresso"></div>
+
+  <div id="modal-fim">
+    <div class="conteudo">
+      <h2>🏁 Fim dos desafios!</h2>
+      <div id="resultado-final" style="font-size:20px; margin:15px 0;"></div>
+      <div id="estrelas-final" class="estrela"></div>
+      <button class="reiniciar" onclick="reiniciarJogo()">🔄 Reiniciar</button>
+      <button class="fechar" onclick="fecharModal()">❌ Fechar</button>
+    </div>
+  </div>
+
+  <audio id="som-acerto" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f3b9d6c6c.mp3?filename=correct-2-46134.mp3"></audio>
+  <audio id="som-erro" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7e3e2b1b6e.mp3?filename=error-2-46133.mp3"></audio>
+
+  <script>
+    const desafios = [
+      { emoji: "🐭", palavra: "RATO" },
+      { emoji: "🐶", palavra: "CACHORRO" },
+      { emoji: "🐱", palavra: "GATO" },
+      { emoji: "🍌", palavra: "BANANA" },
+      { emoji: "🚗", palavra: "CARRO" },
+      { emoji: "🧃", palavra: "SUCO" },
+      { emoji: "🐘", palavra: "ELEFANTE" },
+      { emoji: "🎒", palavra: "MOCHILA" },
+      { emoji: "📚", palavra: "LIVRO" },
+      { emoji: "🧸", palavra: "URSO" },
+      { emoji: "🪁", palavra: "PIPA" },
+      { emoji: "🛴", palavra: "PATINETE" },
+      { emoji: "🐦", palavra: "PASSARO" },
+      { emoji: "🪀", palavra: "IOIO" },
+      { emoji: "🧠", palavra: "CEREBRO" }
+    ];
+
+    const linhas = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+    const teclado = document.getElementById("teclado-visual");
+    linhas.forEach(linha => {
+      const divLinha = document.createElement("div");
+      divLinha.className = "linha-teclado";
+      linha.split("").forEach(letra => {
+        const tecla = document.createElement("div");
+        tecla.className = "tecla";
+        tecla.textContent = letra;
+        tecla.id = "tecla-" + letra;
+        divLinha.appendChild(tecla);
+      });
+      teclado.appendChild(divLinha);
+    });
+
+    let atual = 0;
+    let pontos = 0;
+    const entrada = document.getElementById("entrada");
+    const desafioDiv = document.getElementById("desafio");
+    const feedback = document.getElementById("feedback");
+    const emojiFeedback = document.getElementById("emoji-feedback");
+    const progresso = document.getElementById("progresso");
+    const modalFim = document.getElementById("modal-fim");
+    const resultadoFinal = document.getElementById("resultado-final");
+    const estrelasFinal = document.getElementById("estrelas-final");
+    const somAcerto = document.getElementById("som-acerto");
+    const somErro = document.getElementById("som-erro");
+
+    function mostrarDesafio() {
+      const item = desafios[atual];
+      desafioDiv.innerHTML = `${item.emoji} <strong>${item.palavra}</strong>`;
+      entrada.value = "";
+      entrada.classList.remove("erro");
+      entrada.disabled = false;
+      feedback.textContent = "";
+      emojiFeedback.textContent = "⌨️";
+      atualizarTeclado("");
+      progresso.textContent = `Desafio ${atual + 1} de ${desafios.length} | Pontos: ${pontos}`;
+    }
+
+    function verificar() {
+      const digitado = entrada.value.toUpperCase();
+      const esperado = desafios[atual].palavra;
+
+      if (digitado === esperado) {
+        pontos += 10;
+        somAcerto.play();
+        feedback.textContent = "✅ Muito bem!";
+        emojiFeedback.textContent = "🎉";
+        atual++;
+        if (atual < desafios.length) {
+          setTimeout(mostrarDesafio, 1000);
+        } else {
+          mostrarFim();
+        }
+        return;
+      }
+
+      const index = digitado.length - 1;
+      if (digitado[index] && digitado[index] !== esperado[index]) {
+        somErro.play();
+        const letraErrada = digitado[index];
+        const teclaErrada = document.getElementById("tecla-" + letraErrada);
+        if (teclaErrada) teclaErrada.classList.add("erro");
+
+                entrada.classList.add("erro");
+                entrada.disabled = true;
+                feedback.textContent = "❌ Letra incorreta!";
+                emojiFeedback.textContent = "🚫";
+
+                setTimeout(() => {
+                entrada.value = digitado.slice(0, -1);
+                entrada.classList.remove("erro");
+                entrada.disabled = false;
+                entrada.focus();
+                atualizarTeclado(entrada.value.toUpperCase());
+                feedback.textContent = "⏳ Continue tentando...";
+                emojiFeedback.textContent = "⌨️";
+                }, 1000);
+                return;
+            }
+
+            feedback.textContent = "⏳ Continue tentando...";
+            emojiFeedback.textContent = "⌨️";
+            entrada.classList.remove("erro");
+            atualizarTeclado(digitado);
+            }
+
+            function atualizarTeclado(digitado) {
+            document.querySelectorAll(".tecla").forEach(tecla => {
+                tecla.classList.remove("ativa");
+                tecla.classList.remove("erro");
+            });
+
+            const esperado = desafios[atual].palavra;
+            const proximaLetra = esperado[digitado.length];
+            if (proximaLetra) {
+                const teclaAtual = document.getElementById("tecla-" + proximaLetra);
+                if (teclaAtual) teclaAtual.classList.add("ativa");
+            }
+            }
+
+            function mostrarFim() {
+            entrada.disabled = true;
+            const estrelas = "⭐".repeat(Math.min(3, Math.floor(pontos / 50)));
+            resultadoFinal.innerHTML = `Você fez <strong>${pontos}</strong> pontos!`;
+            estrelasFinal.textContent = estrelas || "⭐";
+            modalFim.style.display = "flex";
+            }
+
+            function reiniciarJogo() {
+            atual = 0;
+            pontos = 0;
+            modalFim.style.display = "none";
+            mostrarDesafio();
+            }
+
+            function fecharModal() {
+            modalFim.style.display = "none";
+            }
+
+            mostrarDesafio();
+        </script>
+        </body>
+        </html>
